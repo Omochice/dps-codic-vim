@@ -1,0 +1,28 @@
+# codic-vim
+
+[ja](./README.ja.md)
+
+
+The [codic](https://codic.jp/engine) plugin of vim.
+
+Using [vim-denops](https://github.com/vim-denops/denops.vim)
+
+## Installation
+
+Use your Vim plugin manager.
+
+Get an access token from codic and register it as the environment variable `$CODIC_TOKEN`.
+
+```bash
+export CODIC_TOKEN <YOUR ACCESS TOKEN>
+```
+
+## Usage
+
+Run `:Codic <text you want to translate>` and the results will be displayed in a new window.
+
+Up to 3 texts can be converted at the same time, separated by spaces (both full-width and half-width).
+
+## Example
+
+![](img/sample.gif)
