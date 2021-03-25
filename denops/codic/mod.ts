@@ -1,7 +1,7 @@
 import { start } from "https://deno.land/x/denops_std@v0.4/mod.ts";
 
 async function fetchAPI(text: string[], TOKEN: any): Promise<any> {
-  const BASEURL: string = "https://api.codic.jp/v1/engine/translate.json";
+  const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(BASEURL, {
     headers: new Headers({
       "Authorization": `Bearer ${TOKEN}`,
@@ -27,16 +27,38 @@ start(async (vim) => {
       }
       // const content = "hello deno and denops world !!";
       const TOKEN = await vim.eval("$CODIC_TOKEN");
+      if (TOKEN === "") {
+        throw new Error(`No token set`);
+      }
 
-      const content = args.split(/\s+/);
+      // console.log(`your token is ${TOKEN}`);
+      const targets = args.split(/\s+/);
 
+      const data = await fetchAPI(targets, TOKEN);
+
+      let contents: string[] = [];
+      console.log(data);
+      for (let datum of data) {
+        contents.push(`${datum["text"]} -> ${datum["translated_text"]} `);
+        for (let word of datum["words"]) {
+          let content = `  - ${word["text"]}: `;
+          if (word["successful"]) {
+            for (let candidate of word["candidates"]) {
+              content += `${candidate["text"]}, `;
+            }
+          } else {
+            content += "null";
+          }
+          contents.push(content);
+        }
+        contents.push("");
+      }
       await vim.cmd("bo new");
-      // await vim.call("setline", 1, args.split(/\r?\n/g));
-      const data = await fetchAPI(content, TOKEN);
+
       await vim.call(
         "setline",
         1,
-        JSON.stringify(data, null, 2).split(/\r?\n/g),
+        contents,
       );
       await vim.execute(`
         setlocal bufhidden=wipe buftype=nofile
