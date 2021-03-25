@@ -25,8 +25,7 @@ start(async (vim) => {
       if (typeof args !== "string") {
         throw new Error(`'args' must be a string`);
       }
-      // const content = "hello deno and denops world !!";
-      const TOKEN = await vim.eval("$CODIC_TOKEN");
+      const TOKEN = Deno.env.get("CODIC_TOKEN");
       if (TOKEN === "") {
         throw new Error(`No token set`);
       }
@@ -37,7 +36,6 @@ start(async (vim) => {
       const data = await fetchAPI(targets, TOKEN);
 
       let contents: string[] = [];
-      console.log(data);
       for (let datum of data) {
         contents.push(`${datum["text"]} -> ${datum["translated_text"]} `);
         for (let word of datum["words"]) {
