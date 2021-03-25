@@ -1,4 +1,4 @@
-# codic-vim
+# dps-codic-vim
 
 [ja](./README.ja.md)
 
