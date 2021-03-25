@@ -1,4 +1,4 @@
-# codic-vim
+# dps-codic-vim
 
 [codic](https://codic.jp) のvimプラグインです。
 [vim-denops](https://github.com/vim-denops/denops.vim)に依存しています。
