@@ -1,6 +1,9 @@
 import { start } from "https://deno.land/x/denops_std@v0.4/mod.ts";
 
-async function fetchAPI(text: string[], TOKEN: any): Promise<any> {
+async function fetchAPI(text: string[], TOKEN: string) {
+  if (text.length > 4) {
+    throw new Error(`The number of texts must be 3 or less.`);
+  }
   const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(BASEURL, {
     headers: new Headers({
@@ -26,22 +29,22 @@ start(async (vim) => {
         throw new Error(`'args' must be a string`);
       }
       const TOKEN = Deno.env.get("CODIC_TOKEN");
-      if (TOKEN === "") {
+      // console.log(`your token is ${TOKEN}`);
+      if (TOKEN === undefined) {
         throw new Error(`No token set`);
       }
 
-      // console.log(`your token is ${TOKEN}`);
       const targets = args.split(/\s+/);
 
       const data = await fetchAPI(targets, TOKEN);
 
       let contents: string[] = [];
-      for (let datum of data) {
+      for (const datum of data) {
         contents.push(`${datum["text"]} -> ${datum["translated_text"]} `);
-        for (let word of datum["words"]) {
+        for (const word of datum["words"]) {
           let content = `  - ${word["text"]}: `;
           if (word["successful"]) {
-            for (let candidate of word["candidates"]) {
+            for (const candidate of word["candidates"]) {
               content += `${candidate["text"]}, `;
             }
           } else {
