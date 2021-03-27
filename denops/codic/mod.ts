@@ -54,7 +54,7 @@ start(async (vim) => {
         }
         contents.push("");
       }
-      await vim.cmd("bo new");
+      await vim.cmd("botright new");
 
       await vim.call(
         "setline",
