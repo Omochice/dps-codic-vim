@@ -1,7 +1,7 @@
 import { start } from "https://deno.land/x/denops_std@v0.4/mod.ts";
 
 async function fetchAPI(text: string[], TOKEN: string) {
-  if (text.length > 4) {
+  if (text.length >= 4) {
     throw new Error(`The number of texts must be 3 or less.`);
   }
   const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
