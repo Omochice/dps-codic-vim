@@ -31,6 +31,7 @@ start(async (vim) => {
       const TOKEN = Deno.env.get("CODIC_TOKEN");
       // console.log(`your token is ${TOKEN}`);
       if (TOKEN === undefined) {
+        console.error("No token set");
         throw new Error(`No token set`);
       }
 
