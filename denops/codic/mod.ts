@@ -39,7 +39,7 @@ start(async (vim) => {
 
       const data = await fetchAPI(targets, TOKEN);
 
-      let contents: string[] = [];
+      const contents: string[] = [];
       for (const datum of data) {
         contents.push(`${datum["text"]} -> ${datum["translated_text"]} `);
         for (const word of datum["words"]) {
@@ -70,7 +70,7 @@ start(async (vim) => {
     },
   });
 
-  vim.execute(`
+  await vim.execute(`
     command! -nargs=? -bar Codic call denops#request('${vim.name}', 'codic', [<q-args>])
   `);
 });
