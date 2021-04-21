@@ -1,4 +1,4 @@
-import { start } from "https://deno.land/x/denops_std@v0.4/mod.ts";
+import { main } from "https://deno.land/x/denops_std@v0.8/mod.ts";
 
 async function fetchAPI(text: string[], TOKEN: string) {
   if (text.length >= 4) {
@@ -7,10 +7,10 @@ async function fetchAPI(text: string[], TOKEN: string) {
   const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(BASEURL, {
     headers: new Headers({
-      "Authorization": `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${TOKEN}`,
     }),
     body: new URLSearchParams({
-      "text": text.join("\n"),
+      text: text.join("\n"),
     }),
     method: "POST",
   });
@@ -22,7 +22,7 @@ async function fetchAPI(text: string[], TOKEN: string) {
   return data;
 }
 
-start(async (vim) => {
+main(async ({ vim }) => {
   vim.register({
     async codic(args: unknown): Promise<void> {
       if (typeof args !== "string") {
@@ -57,11 +57,7 @@ start(async (vim) => {
       }
       await vim.cmd("botright new");
 
-      await vim.call(
-        "setline",
-        1,
-        contents,
-      );
+      await vim.call("setline", 1, contents);
       await vim.execute(`
         setlocal bufhidden=wipe buftype=nofile
         setlocal nobackup noswapfile
