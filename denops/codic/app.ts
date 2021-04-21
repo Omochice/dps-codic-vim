@@ -7,10 +7,10 @@ async function fetchAPI(text: string[], TOKEN: string) {
   const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(BASEURL, {
     headers: new Headers({
-      "Authorization": `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${TOKEN}`,
     }),
     body: new URLSearchParams({
-      "text": text.join("\n"),
+      text: text.join("\n"),
     }),
     method: "POST",
   });
@@ -57,11 +57,7 @@ start(async (vim) => {
       }
       await vim.cmd("botright new");
 
-      await vim.call(
-        "setline",
-        1,
-        contents,
-      );
+      await vim.call("setline", 1, contents);
       await vim.execute(`
         setlocal bufhidden=wipe buftype=nofile
         setlocal nobackup noswapfile
