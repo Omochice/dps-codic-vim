@@ -21,4 +21,4 @@ export CODIC_TOKEN <YOUR ACCESS TOKEN>
 
 ## Example
 
-![](img/sample.gif)
+![](https://gyazo.com/4970a27e698894dd8de5928d334178ce)
