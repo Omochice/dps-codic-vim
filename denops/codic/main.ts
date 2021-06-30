@@ -1,20 +1,22 @@
 import { Denops } from "https://deno.land/x/denops_std@v1.0.0-alpha.0/mod.ts";
+import { execute } from "https://deno.land/x/denops_std@v1.0.0-alpha.0/helper/mod.ts";
 
-async function fetchAPI(text: string[], token: string) {
-  if (text.length >= 4) {
+async function codic(texts: string[], token: string) {
+  if (texts.length >= 4) {
     throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
   }
-  const baseUrl = "https://api.codic.jp/v1/engine/translate.json";
+  const baseUrl: string = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(baseUrl, {
     headers: new Headers({
       Authorization: `Bearer ${token}`,
     }),
     body: new URLSearchParams({
-      text: text.join("\n"),
+      text: texts.join("\n"),
     }),
     method: "POST",
   });
   if (res.status !== 200) {
+    console.error(`[dps-codic-vim] The response status is ${res.status}.`);
     throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
   }
   const json = res.json();
@@ -22,51 +24,59 @@ async function fetchAPI(text: string[], token: string) {
   return data;
 }
 
-main(async ({ vim }) => {
-  vim.register({
-    async codic(args: unknown): Promise<void> {
-      if (typeof args !== "string") {
-        throw new Error(`'args' must be a string`);
+function construct(r: any[]): string[] {
+  const contents: string[] = [];
+  for (const datum of r) {
+    contents.push(`${datum["text"]} -> ${datum["translated_text"]}`);
+    for (const word of datum["words"]) {
+      let content = `  - ${word["text"]}: `;
+      if (word["successful"]) {
+        const candidates: string[] = [];
+        for (const candidate of word["candidates"]) {
+          candidates.push(candidate["text"]);
+        }
+        content += candidates.join(", ");
+      } else {
+        content += "null";
       }
-      const TOKEN = Deno.env.get("CODIC_TOKEN");
-      // console.log(`your token is ${TOKEN}`);
-      if (TOKEN === undefined) {
-        console.error("No token set");
+      contents.push(content);
+    }
+    contents.push("");
+  }
+  return contents;
+}
+
+export async function main(denops: Denops): Promise<void> {
+  denops.dispatcher = {
+    async codicVim(args: unknown): Promise<void> {
+      if (typeof args !== "string") {
+        throw new Error(
+          `"text" atribute of "codic" in ${denops.name} must be string`,
+        );
+      }
+      const token = Deno.env.get("CODIC_TOKEN");
+      if (token === undefined) {
+        console.error("[dps-codic-vim] No token set");
         throw new Error(`No token set`);
       }
+      const targets: string[] = args.split(/\s+/);
+      const r = await codic(targets, token);
+      const lines: string[] = construct(r);
 
-      const targets = args.split(/\s+/);
-
-      const data = await fetchAPI(targets, TOKEN);
-
-      const contents: string[] = [];
-      for (const datum of data) {
-        contents.push(`${datum["text"]} -> ${datum["translated_text"]} `);
-        for (const word of datum["words"]) {
-          let content = `  - ${word["text"]}: `;
-          if (word["successful"]) {
-            for (const candidate of word["candidates"]) {
-              content += `${candidate["text"]}, `;
-            }
-          } else {
-            content += "null";
-          }
-          contents.push(content);
-        }
-        contents.push("");
-      }
-      await vim.cmd("botright new");
-
-      await vim.call("setline", 1, contents);
-      await vim.execute(`
+      await denops.cmd("botright new");
+      await denops.call("setline", 1, lines);
+      await execute(
+        denops,
+        `
         setlocal bufhidden=wipe buftype=nofile
         setlocal nobackup noswapfile
         setlocal nomodified nomodifiable
-      `);
+        `,
+      );
+      return await Promise.resolve();
     },
-  });
-
-  await vim.execute(`
-    command! -nargs=? -bar Codic call denops#request('${vim.name}', 'codic', [<q-args>])
-  `);
-});
+  };
+  await denops.cmd(
+    `command! -nargs=? -bar Codic call denops#request("${denops.name}", "codicVim", [<q-args>])`,
+  );
+}
