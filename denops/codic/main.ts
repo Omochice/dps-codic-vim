@@ -1,4 +1,4 @@
-import { main } from "https://deno.land/x/denops_std@v0.8/mod.ts";
+import { Denops } from "https://deno.land/x/denops_std@v1.0.0-alpha.0/mod.ts";
 
 async function fetchAPI(text: string[], TOKEN: string) {
   if (text.length >= 4) {
