@@ -1,13 +1,13 @@
 import { Denops } from "https://deno.land/x/denops_std@v1.0.0-alpha.0/mod.ts";
 
-async function fetchAPI(text: string[], TOKEN: string) {
+async function fetchAPI(text: string[], token: string) {
   if (text.length >= 4) {
-    throw new Error(`The number of texts must be 3 or less.`);
+    throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
   }
-  const BASEURL = "https://api.codic.jp/v1/engine/translate.json";
-  const res = await fetch(BASEURL, {
+  const baseUrl = "https://api.codic.jp/v1/engine/translate.json";
+  const res = await fetch(baseUrl, {
     headers: new Headers({
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `Bearer ${token}`,
     }),
     body: new URLSearchParams({
       text: text.join("\n"),
@@ -15,7 +15,7 @@ async function fetchAPI(text: string[], TOKEN: string) {
     method: "POST",
   });
   if (res.status !== 200) {
-    console.log(res.status);
+    throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
   }
   const json = res.json();
   const data = await json;
