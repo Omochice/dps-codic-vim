@@ -21,7 +21,7 @@ export CODIC_TOKEN <YOUR ACCESS TOKEN>
 
 Run `:Codic <text you want to translate>` and the results will be displayed in a new window.
 
-Up to 3 texts can be converted at the same time, separated by spaces (both full-width and half-width).
+Up to 3 texts can be converted at the same time, separated by spaces (full-width or half-width).
 
 ## Example
 
