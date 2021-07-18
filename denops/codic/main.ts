@@ -30,9 +30,7 @@ async function codic(texts: string[], token: string) {
     console.error(`[dps-codic-vim] The response status is ${res.status}.`);
     throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
   }
-  const json = res.json();
-  const data = await json;
-  return data;
+  return await res.json();
 }
 
 function construct(r: any[]): string[] {
