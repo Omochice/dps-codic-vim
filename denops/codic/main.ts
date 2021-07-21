@@ -70,7 +70,7 @@ async function getExistWin(
     ensureNumber(bufnr);
     return bufnrToWinId(denops, bufnr);
   }
-  // i think it ok to use recursive.
+  // i think its no problem to use recursive.
   // because execute open
   await execute(denops, opener);
   return await getExistWin(denops, bufname, opener);
