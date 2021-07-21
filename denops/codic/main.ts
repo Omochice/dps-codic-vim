@@ -14,7 +14,9 @@ const config = {
 
 async function codic(texts: string[], token: string) {
   if (texts.length >= 4) {
-    throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
+    // throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
+    console.error(`[dps-codic-vim] The number of texts must be 3 or less.`);
+    return {};
   }
   const baseUrl = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(baseUrl, {
@@ -28,7 +30,8 @@ async function codic(texts: string[], token: string) {
   });
   if (res.status !== 200) {
     console.error(`[dps-codic-vim] The response status is ${res.status}.`);
-    throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
+    // throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
+    return {};
   }
   return await res.json();
 }
@@ -103,6 +106,9 @@ export async function main(denops: Denops): Promise<void> {
       const targets: string[] = args.split(/\s+/);
       const r = await codic(targets, token);
       const lines: string[] = construct(r);
+      if (Object.keys(results).length == 0) {
+        return await Promise.resolve(); //  length of query >= 4 or status code is not 200
+      }
 
       // make window
       const currentBufnr = await denops.call("bufnr", "%");
