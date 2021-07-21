@@ -100,13 +100,28 @@ export async function main(denops: Denops): Promise<void> {
       const token = Deno.env.get("CODIC_TOKEN");
       if (token === undefined) {
         console.error("[dps-codic-vim] No token set");
+        // throw new Error(`No token set`);
+        return await Promise.resolve();
       }
-      const targets: string[] = args.split(/\s+/);
-      const r = await codic(targets, token);
-      const lines: string[] = construct(r);
+      let results;
+      if (args.replace(/\s+/, "") === "") {
+        const promptInput = await denops.call("input", "Translate ?: ");
+        ensureString(promptInput);
+        if (promptInput.replace(/\s+/, "") === "") {
+          // if input is empty, do nothing
+          // denops.eval("echo") // this cannot work well
+          return await Promise.resolve();
+        } else {
+          results = await codic(promptInput.split(/\s+/), token);
+        }
+      } else {
+        results = await codic(args.split(/\s+/), token);
+      }
+
       if (Object.keys(results).length == 0) {
         return await Promise.resolve(); //  length of query >= 4 or status code is not 200
       }
+      const lines: string[] = construct(results);
 
       // make window
       const currentBufnr = await denops.call("bufnr", "%");
