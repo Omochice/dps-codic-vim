@@ -127,7 +127,6 @@ export async function main(denops: Denops): Promise<void> {
       const currentBufnr = await denops.call("bufnr", "%");
       ensureNumber(currentBufnr);
       const opener = `rightbelow pedit ${config["bufname"]}`;
-      await execute(denops, opener);
       // move window
       const winId = await getExistWin(denops, config["bufname"], opener);
       await execute(
