@@ -5,7 +5,7 @@ async function codic(texts: string[], token: string) {
   if (texts.length >= 4) {
     throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
   }
-  const baseUrl: string = "https://api.codic.jp/v1/engine/translate.json";
+  const baseUrl = "https://api.codic.jp/v1/engine/translate.json";
   const res = await fetch(baseUrl, {
     headers: new Headers({
       Authorization: `Bearer ${token}`,
