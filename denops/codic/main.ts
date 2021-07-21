@@ -116,11 +116,11 @@ export async function main(denops: Denops): Promise<void> {
       const opener = `rightbelow pedit ${config["bufname"]}`;
       await execute(denops, opener);
       // move window
-      const win = await getExistWin(denops, config["bufname"], opener);
+      const winId = await getExistWin(denops, config["bufname"], opener);
       await execute(
         denops,
         `
-        ${win} wincmd w
+        ${winId} wincmd w
         setlocal modifiable
         `,
       );
@@ -134,8 +134,8 @@ export async function main(denops: Denops): Promise<void> {
         `,
       );
       // return original window
-      const currentWinid = await bufnrToWinId(denops, currentBufnr);
-      await execute(denops, `${currentWinid} wincmd w`);
+      const currentWinId = await bufnrToWinId(denops, currentBufnr);
+      await execute(denops, `${currentWinId} wincmd w`);
       return await Promise.resolve();
     },
   };
