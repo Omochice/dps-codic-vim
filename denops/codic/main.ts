@@ -1,5 +1,11 @@
 import { Denops } from "https://deno.land/x/denops_std@v1.0.0/mod.ts";
 import { execute } from "https://deno.land/x/denops_std@v1.0.0/helper/mod.ts";
+import {
+  ensureArray,
+  ensureNumber,
+  ensureString,
+  isNumber,
+} from "https://deno.land/x/unknownutil@v0.1.1/mod.ts";
 
 async function codic(texts: string[], token: string) {
   if (texts.length >= 4) {
@@ -49,11 +55,12 @@ function construct(r: any[]): string[] {
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
     async codicVim(args: unknown): Promise<void> {
-      if (typeof args !== "string") {
-        throw new Error(
-          `"text" atribute of "codic" in ${denops.name} must be string`,
-        );
-      }
+      ensureString(args);
+      // if (typeof args !== "string") {
+      //   throw new Error(
+      //     `"text" attribute of "codic" in ${denops.name} must be string`,
+      //   );
+      // }
       const token = Deno.env.get("CODIC_TOKEN");
       if (token === undefined) {
         console.error("[dps-codic-vim] No token set");
