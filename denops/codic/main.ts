@@ -66,7 +66,7 @@ async function getExistWin(
   const bufExists = (await denops.call("bufexists", bufname) as number == 1);
 
   if (bufExists) {
-    const bufnr = await denops.call("bufnr", `^${bufname}`);
+    const bufnr = await denops.call("bufnr", `^${bufname}$`);
     ensureNumber(bufnr);
     return bufnrToWinId(denops, bufnr);
   }
