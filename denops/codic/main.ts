@@ -63,7 +63,7 @@ async function getExistWin(
   bufname: string,
   opener: string,
 ): Promise<number> {
-  const bufExists = (await denops.call("bufexists", bufname) as number == 1);
+  const bufExists = await denops.call("bufexists", bufname) as boolean;
 
   if (bufExists) {
     const bufnr = await denops.call("bufnr", `^${bufname}$`);
@@ -92,15 +92,10 @@ export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
     async codicVim(args: unknown): Promise<void> {
       ensureString(args);
-      // if (typeof args !== "string") {
-      //   throw new Error(
-      //     `"text" attribute of "codic" in ${denops.name} must be string`,
-      //   );
-      // }
+
       const token = Deno.env.get("CODIC_TOKEN");
-      if (token === undefined) {
+      if (token == undefined) {
         console.error("[dps-codic-vim] No token set");
-        // throw new Error(`No token set`);
         return await Promise.resolve();
       }
       let results;
@@ -109,7 +104,6 @@ export async function main(denops: Denops): Promise<void> {
         ensureString(promptInput);
         if (promptInput.replace(/\s+/, "") === "") {
           // if input is empty, do nothing
-          // denops.eval("echo") // this cannot work well
           return await Promise.resolve();
         } else {
           results = await codic(promptInput.split(/\s+/), token);
