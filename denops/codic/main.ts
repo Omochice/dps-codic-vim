@@ -152,6 +152,6 @@ export async function main(denops: Denops): Promise<void> {
     },
   };
   await denops.cmd(
-    `command! -nargs=? Codic call denops#request("${denops.name}", "codicVim", [<q-args>])`,
+    `command! -nargs=? Codic call denops#notify("${denops.name}", "codicVim", [<q-args>])`,
   );
 }
