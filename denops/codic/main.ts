@@ -16,6 +16,20 @@ const config = {
   "filetype": "codic",
 };
 
+interface CodicResponce {
+  successful: boolean;
+  text: string;
+  "translated_text": string;
+  words: CodicEachRensponce[];
+}
+
+interface CodicEachRensponce {
+  successful: boolean;
+  text: string;
+  "translated_text": string;
+  candidates: Record<"text", string>[];
+}
+
 async function codic(texts: string[], token: string) {
   if (texts.length >= 4) {
     // throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
@@ -40,7 +54,9 @@ async function codic(texts: string[], token: string) {
   return await res.json();
 }
 
-function construct(r: any[]): string[] {
+function construct(
+  r: CodicResponce[]
+): string[] {
   const contents: string[] = [];
   for (const datum of r) {
     contents.push(`${datum["text"]} -> ${datum["translated_text"]}`);
@@ -108,7 +124,6 @@ export async function main(denops: Denops): Promise<void> {
         const promptInput = await input(denops, {
           prompt: "[Codic]> ",
         });
-        console.log(promptInput, typeof promptInput !== "string");
         if (
           promptInput == null ||
           promptInput.replace(/\s+/, "") === ""
