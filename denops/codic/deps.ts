@@ -3,6 +3,7 @@ export {
   execute,
   input,
 } from "https://deno.land/x/denops_std@v1.7.4/helper/mod.ts";
+export * as var from "https://deno.land/x/denops_std@v1.7.4/variable/mod.ts";
 export * as fn from "https://deno.land/x/denops_std@v1.7.4/function/mod.ts";
 export {
   ensureArray,
