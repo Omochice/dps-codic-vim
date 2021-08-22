@@ -64,10 +64,10 @@ async function getExistWin(
   bufname: string,
   opener: string,
 ): Promise<number> {
-  const bufExists = await denops.call("bufexists", bufname) as boolean;
+  const bufExists = await fn.bufexists(denops, bufname);
 
   if (bufExists) {
-    const bufnr = await denops.call("bufnr", `^${bufname}$`);
+    const bufnr = await fn.bufnr(denops, bufname);
     ensureNumber(bufnr);
     return bufnrToWinId(denops, bufnr);
   }
@@ -78,13 +78,14 @@ async function getExistWin(
 }
 
 async function bufnrToWinId(denops: Denops, bufnr: number): Promise<number> {
-  const wins = await denops.call("win_findbuf", bufnr);
+  const wins = await fn.win_findbuf(denops, bufnr);
   ensureArray(wins, isNumber);
-  const tabnr = await denops.call("tabpagenr");
+  const tabnr = await fn.tabpagenr(denops);
   ensureNumber(tabnr);
-  const winIds = await denops.eval(
-    `filter(map([${wins}], "win_id2tabwin(v:val)"), "v:val[0] is# ${tabnr}")`,
-  ) as number[][]; // [ [tabnr, winnr] ] TODO replace map(), filter() in typescrit
+  const winIds =
+    (await denops.eval(`map([${wins}], "win_id2tabwin(v:val)")`) as number[][])
+      .filter((x) => x[0] == tabnr);
+
   ensureNumber(winIds[0][1]);
   return winIds[0][1];
 }
@@ -119,8 +120,7 @@ export async function main(denops: Denops): Promise<void> {
       const lines: string[] = construct(results);
 
       // make window
-      const currentBufnr = await denops.call("bufnr", "%");
-      ensureNumber(currentBufnr);
+      const currentBufnr = await fn.bufnr(denops, "%");
       const opener = `rightbelow pedit ${config["bufname"]}`;
       // move window
       const winId = await getExistWin(denops, config["bufname"], opener);
@@ -131,7 +131,7 @@ export async function main(denops: Denops): Promise<void> {
         setlocal modifiable
         `,
       );
-      await denops.call("setline", 1, lines);
+      await fn.setline(denops, 1, lines);
       await execute(
         denops,
         `
