@@ -1,61 +1,22 @@
-import { Denops } from "https://deno.land/x/denops_std@v1.7.4/mod.ts";
 import {
-  execute,
-  input,
-} from "https://deno.land/x/denops_std@v1.7.4/helper/mod.ts";
-import * as fn from "https://deno.land/x/denops_std@v1.7.4/function/mod.ts";
-import {
+  Denops,
   ensureArray,
   ensureNumber,
   ensureString,
+  execute,
+  fn,
+  input,
   isNumber,
-} from "https://deno.land/x/unknownutil@v1.1.0/mod.ts";
+} from "./deps.ts";
+import { codic, CodicResponce } from "./codic.ts";
 
 const config = {
   "bufname": "codic://output",
   "filetype": "codic",
 };
 
-interface CodicResponce {
-  successful: boolean;
-  text: string;
-  "translated_text": string;
-  words: CodicEachRensponce[];
-}
-
-interface CodicEachRensponce {
-  successful: boolean;
-  text: string;
-  "translated_text": string;
-  candidates: Record<"text", string>[];
-}
-
-async function codic(texts: string[], token: string) {
-  if (texts.length >= 4) {
-    // throw new Error(`[dps-codic-vim] The number of texts must be 3 or less.`);
-    console.error(`[dps-codic-vim] The number of texts must be 3 or less.`);
-    return {};
-  }
-  const baseUrl = "https://api.codic.jp/v1/engine/translate.json";
-  const res = await fetch(baseUrl, {
-    headers: new Headers({
-      Authorization: `Bearer ${token}`,
-    }),
-    body: new URLSearchParams({
-      text: texts.join("\n"),
-    }),
-    method: "POST",
-  });
-  if (res.status !== 200) {
-    console.error(`[dps-codic-vim] The response status is ${res.status}.`);
-    // throw new Error(`[dps-codic-vim] The response status is ${res.status}.`);
-    return {};
-  }
-  return await res.json();
-}
-
 function construct(
-  r: CodicResponce[]
+  r: CodicResponce[],
 ): string[] {
   const contents: string[] = [];
   for (const datum of r) {
@@ -119,7 +80,7 @@ export async function main(denops: Denops): Promise<void> {
         console.error("[dps-codic-vim] No token set");
         return await Promise.resolve();
       }
-      let results;
+      let response;
       if (args.replace(/\s+/, "") === "") {
         const promptInput = await input(denops, {
           prompt: "[Codic]> ",
@@ -131,16 +92,23 @@ export async function main(denops: Denops): Promise<void> {
           console.log("Codic is cancelled");
           return await Promise.resolve();
         } else {
-          results = await codic(promptInput.split(/\s+/), token);
+          try {
+            response = await codic(promptInput.split(/\s+/), token);
+          } catch (error) {
+            console.error(`[dps-codic-vim] ${error}`);
+            return await Promise.resolve();
+          }
         }
       } else {
-        results = await codic(args.split(/\s+/), token);
+        try {
+          response = await codic(args.split(/\s+/), token);
+        } catch (error) {
+          console.error(`[dps-codic-vim] ${error}`);
+          return await Promise.resolve();
+        }
       }
 
-      if (Object.keys(results).length == 0) {
-        return await Promise.resolve(); //  length of query >= 4 or status code is not 200
-      }
-      const lines: string[] = construct(results);
+      const results = construct(response);
 
       // make window
       const currentBufnr = await fn.bufnr(denops, "%");
@@ -154,7 +122,7 @@ export async function main(denops: Denops): Promise<void> {
         setlocal modifiable
         `,
       );
-      await fn.setline(denops, 1, lines);
+      await fn.setline(denops, 1, results);
       await execute(
         denops,
         `
