@@ -12,21 +12,25 @@ interface CodicEachRensponce {
   candidates: Record<"text", string>[];
 }
 
+export type Casing =
+  | "camel"
+  | "pascal"
+  | "lower_underscore"
+  | "upper_underscore"
+  | "hyphen";
+
+export type AcronymStyle =
+  | "MS_naming_guidelines"
+  | "camel_strict"
+  | "literal";
+
 export async function codic(
   texts: string[],
   token: string,
   options: {
     projectId?: string;
-    casing?:
-      | "camel"
-      | "pascal"
-      | "lower_underscore"
-      | "upper_underscore"
-      | "hyphen";
-    acronymStyle?:
-      | "MS_naming_guidelines"
-      | "camel_strict"
-      | "literal";
+    casing?: Casing;
+    acronymStyle?: AcronymStyle;
   } = {},
 ): Promise<CodicResponce[]> {
   if (texts.length >= 4) {
@@ -41,15 +45,15 @@ export async function codic(
     body: new URLSearchParams(
       JSON.parse(JSON.stringify({ // undefinedの除去
         text: texts.join("\n"),
-        project_id: options.projectId,
-        casing: options.casing,
-        acronym_style: options.acronymStyle,
+        project_id: options.projectId || undefined,
+        casing: options.casing || undefined,
+        acronym_style: options.acronymStyle || undefined,
       })),
     ),
     method: "POST",
   });
   if (res.status !== 200) {
-    throw new Error(`The response status is ${res.status}.`);
+    throw new Error(`The response status is ${res.status}(${res.statusText}).`);
   }
   return await res.json();
 }

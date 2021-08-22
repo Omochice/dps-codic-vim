@@ -7,8 +7,9 @@ import {
   fn,
   input,
   isNumber,
+  vars,
 } from "./deps.ts";
-import { codic, CodicResponce } from "./codic.ts";
+import { AcronymStyle, Casing, codic, CodicResponce } from "./codic.ts";
 
 const config = {
   "bufname": "codic://output",
@@ -76,6 +77,14 @@ export async function main(denops: Denops): Promise<void> {
       ensureString(args);
 
       const token = Deno.env.get("CODIC_TOKEN");
+      const options = {
+        projectId: await vars.g.get(denops, "dps_codic_project_id") as string,
+        casing: await vars.g.get(denops, "dps_codic_casing") as Casing,
+        acronymStyle: await vars.g.get(
+          denops,
+          "dps_codic_acronym_style",
+        ) as AcronymStyle,
+      }; // FIXME: if not set vars, return null
       if (token == undefined) {
         console.error("[dps-codic-vim] No token set");
         return await Promise.resolve();
@@ -93,7 +102,7 @@ export async function main(denops: Denops): Promise<void> {
           return await Promise.resolve();
         } else {
           try {
-            response = await codic(promptInput.split(/\s+/), token);
+            response = await codic(promptInput.split(/\s+/), token, options);
           } catch (error) {
             console.error(`[dps-codic-vim] ${error}`);
             return await Promise.resolve();
@@ -101,7 +110,7 @@ export async function main(denops: Denops): Promise<void> {
         }
       } else {
         try {
-          response = await codic(args.split(/\s+/), token);
+          response = await codic(args.split(/\s+/), token, options);
         } catch (error) {
           console.error(`[dps-codic-vim] ${error}`);
           return await Promise.resolve();
