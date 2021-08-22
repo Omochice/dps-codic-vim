@@ -1,5 +1,8 @@
 import { Denops } from "https://deno.land/x/denops_std@v1.7.4/mod.ts";
-import { execute } from "https://deno.land/x/denops_std@v1.7.4/helper/mod.ts";
+import {
+  execute,
+  input,
+} from "https://deno.land/x/denops_std@v1.7.4/helper/mod.ts";
 import * as fn from "https://deno.land/x/denops_std@v1.7.4/function/mod.ts";
 import {
   ensureArray,
@@ -102,10 +105,15 @@ export async function main(denops: Denops): Promise<void> {
       }
       let results;
       if (args.replace(/\s+/, "") === "") {
-        const promptInput = await denops.call("input", "Translate ?: ");
-        ensureString(promptInput);
-        if (promptInput.replace(/\s+/, "") === "") {
-          // if input is empty, do nothing
+        const promptInput = await input(denops, {
+          prompt: "[Codic]> ",
+        });
+        console.log(promptInput, typeof promptInput !== "string");
+        if (
+          promptInput == null ||
+          promptInput.replace(/\s+/, "") === ""
+        ) {
+          console.log("Codic is cancelled");
           return await Promise.resolve();
         } else {
           results = await codic(promptInput.split(/\s+/), token);
