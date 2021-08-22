@@ -1,11 +1,11 @@
-export interface CodicResponce {
+export interface CodicResponse {
   successful: boolean;
   text: string;
   "translated_text": string;
-  words: CodicEachRensponce[];
+  words: CodicEachRensponse[];
 }
 
-interface CodicEachRensponce {
+interface CodicEachRensponse {
   successful: boolean;
   text: string;
   "translated_text": string;
@@ -32,7 +32,7 @@ export async function codic(
     casing?: Casing;
     acronymStyle?: AcronymStyle;
   } = {},
-): Promise<CodicResponce[]> {
+): Promise<CodicResponse[]> {
   if (texts.length >= 4) {
     throw new Error(`The number of texts must be 3 or less.`);
   }
