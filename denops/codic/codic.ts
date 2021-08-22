@@ -52,7 +52,7 @@ export async function codic(
     ),
     method: "POST",
   });
-  if (res.status !== 200) {
+  if (res.status != 200) {
     throw new Error(`The response status is ${res.status}(${res.statusText}).`);
   }
   return await res.json();
