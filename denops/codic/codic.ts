@@ -15,13 +15,13 @@ interface CodicEachRensponse {
 export type Casing =
   | "camel"
   | "pascal"
-  | "lower_underscore"
-  | "upper_underscore"
+  | "lower underscore"
+  | "upper underscore"
   | "hyphen";
 
 export type AcronymStyle =
-  | "MS_naming_guidelines"
-  | "camel_strict"
+  | "MS naming guidelines"
+  | "camel strict"
   | "literal";
 
 export async function codic(
