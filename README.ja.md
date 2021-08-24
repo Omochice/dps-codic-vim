@@ -33,6 +33,71 @@ export CODIC_TOKEN <YOUR ACCESS TOKEN>
 
 テキストはスペース（全角半角問わず）区切りで最大3件まで同時に変換することができます。
 
+### Options
+
+CodicのAPIへリクエストをする際に指定する[いくつかの値](https://codic.jp/docs/api/engine/translate)を設定できます。
+
+- `g:dps_codic_project_id`
+
+    変換で使用するプロジェクト（辞書）のid。
+
+    Default: None (デフォルトの辞書が使われます。)
+
+    ```vim
+    let g:dps_codic_project_id = 'Your project id'
+    ```
+
+- `g:dps_codic_casing`
+
+    翻訳されたテキストに対して適用されるケーシング。
+
+    下記のいずれかの値である必要があります。
+
+    - `camel`
+
+        例: `translatedText`.
+
+    - `pascal`
+
+        例: `TranslatedText`
+
+    - `lower underscore`
+
+        例: `translated_text`
+
+    - `upper underscore`
+
+        例: `TRANSLATED_TEXT`
+
+    - `hyphen`
+
+        例: `translated-text`
+
+    Default: None (翻訳されたテキストは半角スペースで区切られます)
+
+    ```vim
+    let g:dps_codic_casing = "one of the above"
+    ```
+
+- `g:dps_codic_acronym_style`
+    
+    `g:dps_codic_casing`に`camel`または`pascal`を指定したときに使われる頭字語の処理方法。
+
+    以下のいずれかである必要があります。
+
+    - `MS naming guidelines`
+
+    - `camel strict`
+
+    - `literal`
+
+    Default: None (処理はされません。)
+    
+    ```vim
+    let g:dps_codic_acronym_style = "one of the above"
+    ```
+
+
 ## Example
 
 ![sampleMovie](https://i.gyazo.com/48899d7a8e6686198577246ec4f366f4.gif)
