@@ -1,5 +1,7 @@
 # dps-codic-vim
 
+![badge-test](https://github.com/Omochice/dps-codic-vim/workflows/deno-test/badge.svg)
+
 [codic](https://codic.jp) のvimプラグインです。
 [vim-denops](https://github.com/vim-denops/denops.vim)に依存しています。
 

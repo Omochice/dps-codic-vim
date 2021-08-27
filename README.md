@@ -1,6 +1,7 @@
 # dps-codic-vim
 
-[![test](https://img.shields.io/static/v1?label=Japanese&message=here&color=blue)](./README.ja.md)
+[![linkToJapaneseReadme](https://img.shields.io/static/v1?label=Japanese&message=here&color=blue)](./README.ja.md)
+![badge-test](https://github.com/Omochice/dps-codic-vim/workflows/deno-test/badge.svg)
 
 The [codic](https://codic.jp/engine) plugin of vim.
 
