@@ -1,32 +1,11 @@
 import { Denops, ensureString, fn, input, vars } from "./deps.ts";
-import { AcronymStyle, Casing, codic, CodicResponse } from "./codic.ts";
+import { AcronymStyle, Casing, codic } from "./codic.ts";
+import { construct } from "./construction.ts";
 
 const config = {
   "bufname": "codic://output",
   "filetype": "codic",
 };
-
-function construct(r: CodicResponse[]): string[] {
-  const contents: string[] = [];
-  for (const datum of r) {
-    contents.push(`${datum["text"]} -> ${datum["translated_text"]}`);
-    for (const word of datum["words"]) {
-      let content = `  - ${word["text"]}: `;
-      if (word["successful"]) {
-        const candidates: string[] = [];
-        for (const candidate of word["candidates"]) {
-          candidates.push(candidate["text"]);
-        }
-        content += candidates.join(", ");
-      } else {
-        content += "null";
-      }
-      contents.push(content);
-    }
-    contents.push("");
-  }
-  return contents;
-}
 
 export async function main(denops: Denops): Promise<void> {
   denops.dispatcher = {
