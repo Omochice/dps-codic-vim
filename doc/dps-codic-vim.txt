@@ -46,15 +46,15 @@ g:dps_codic_casing                 *g:dps_codic_casing*
         It must be one of the below.
 
         - `camel`
-          camelCase
+	      like `translatedText`.
         - `pascal`
-          PascalCase
+          like `TranslatedText`
         - `lower underscore`
-          lower_underscore
+          like `translated_text`
         - `upper underscore`
-          UPPER_UNDERSCORE
+          like `TRANSLATED_TEXT`
         - `hyphen`
-          hyphen-hyphen
+          like `translated-text`
 
         Default: None (separated with a space)
 

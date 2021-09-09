@@ -3,7 +3,7 @@
 [![linkToJapaneseReadme](https://img.shields.io/static/v1?label=Japanese&message=here&color=blue)](./README.ja.md)
 ![badge-test](https://github.com/Omochice/dps-codic-vim/workflows/deno-test/badge.svg)
 
-The [codic](https://codic.jp/engine) plugin of vim.
+The [codic](https://codic.jp/engine) plugin for vim by denops.vim.
 
 Using [vim-denops](https://github.com/vim-denops/denops.vim).
 
@@ -37,9 +37,9 @@ if run only `:Codic`, ask text from commandline.
 
 Up to 3 texts can be converted at the same time, separated by spaces (full-width or half-width).
 
-### Options
+### Variables
 
-You can set some options. see [here](https://codic.jp/docs/api/engine/translate)(japanese).
+You can set some variables. see [official document](https://codic.jp/docs/api/engine/translate)(japanese) also.
 
 It is used when request API.
 
@@ -79,7 +79,7 @@ It is used when request API.
 
         like `translated-text`
 
-    Default: no casing (separated with a space)
+    Default: None (separated with a space)
 
     ```vim
     let g:dps_codic_casing = "one of the above"
