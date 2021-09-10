@@ -5,10 +5,12 @@ on:
     branches:
       - main
     paths:
-      - '**.ts'
+      - "**/*.ts"
+      - ".github/workflows/ci.yml"
   pull_request:
-    branches:
-      - main
+    paths:
+      - "**/*.ts"
+      - ".github/workflows/ci.yml"
     
 
 jobs:
