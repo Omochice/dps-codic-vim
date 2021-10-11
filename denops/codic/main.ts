@@ -63,7 +63,4 @@ export async function main(denops: Denops): Promise<void> {
       return await Promise.resolve();
     },
   };
-  await denops.cmd(
-    `command! -nargs=? Codic call denops#notify("${denops.name}", "codicVim", [<q-args>])`,
-  );
 }
