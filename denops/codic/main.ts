@@ -7,7 +7,7 @@ const config = {
   "filetype": "codic",
 };
 
-export async function main(denops: Denops): Promise<void> {
+export function main(denops: Denops): void {
   denops.dispatcher = {
     async codicVim(args: unknown): Promise<void> {
       ensureString(args);
