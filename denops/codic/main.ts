@@ -53,14 +53,15 @@ export function main(denops: Denops): void {
         }
       }
 
-      const results = construct(response);
-
-      await denops.cmd(`rightbelow pedit ${config.bufname}`);
-      const bufnr = await fn.bufnr(denops, config.bufname);
-      await fn.setbufvar(denops, bufnr, "&buftype", "nofile");
-      await fn.setbufvar(denops, bufnr, "&filetype", config.filetype);
-      await fn.setbufline(denops, bufnr, 1, results);
-      return await Promise.resolve();
+      await denops.cmd(`rightbelow pedit ${config.bufname}`),
+        await Promise.all([
+          fn.bufnr(denops, config.bufname),
+          construct(response),
+        ]).then(([bufnr, results]) => {
+          fn.setbufvar(denops, bufnr, "&buftype", "nofile");
+          fn.setbufvar(denops, bufnr, "&filetype", config.filetype);
+          fn.setbufline(denops, bufnr, 1, results);
+        });
     },
   };
 }
