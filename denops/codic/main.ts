@@ -26,13 +26,14 @@ export function main(denops: Denops): void {
         return await Promise.resolve();
       }
       let response;
-      if (args.replace(/\s+/, "") === "") {
+      const reg = /^\s*$/;
+      if (reg.test(args)) {
         const promptInput = await input(denops, {
           prompt: "[Codic]> ",
         });
         if (
           promptInput == null ||
-          promptInput.replace(/\s+/, "") === ""
+          reg.test(promptInput)
         ) {
           console.log("Codic is cancelled");
           return await Promise.resolve();
