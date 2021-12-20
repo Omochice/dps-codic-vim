@@ -1,4 +1,4 @@
-import { assertStrictEquals, assertThrowsAsync } from "./dev_deps.ts";
+import { assertStrictEquals, assertRejects } from "./dev_deps.ts";
 import { codic } from "../denops/codic/codic.ts";
 
 const MOCK_404 = async (): Promise<Response> => {
@@ -24,7 +24,7 @@ const token = "token for test";
 Deno.test({
   name: "if length of texts is larger than 3, throw error.",
   fn: () => {
-    assertThrowsAsync(
+    assertRejects(
       () => codic(["one", "two", "three", "four"], token),
       Error,
     );
@@ -35,7 +35,7 @@ Deno.test({
   name: "if status is not 200, throw error",
   fn: () => {
     window.fetch = MOCK_404;
-    assertThrowsAsync(
+    assertRejects(
       () => codic(["test"], token),
       Error,
     );
